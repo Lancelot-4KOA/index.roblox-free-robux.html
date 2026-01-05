@@ -1,145 +1,167 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>System Security</title>
+  <meta charset="UTF-8">
+  <title>System Security</title>
+  <style>
+    body {
+      margin: 0;
+      color: #00ff00;
+      font-family: Consolas, monospace;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-<style>
-body {
-  margin: 0;
-  background: black;
-  color: #00ff00;
-  font-family: Consolas, monospace;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+      /* Fond d'écran */
+      background-image: url(https://wallpapershome.com/images/pages/pic_h/26426.jpg); /* mets ici ton image */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-.container {
-  width: 90%;
-  max-width: 800px;
-}
+    .container {
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7); /* fond noir semi-transparent */
+      padding: 20px;
+      border-radius: 8px;
+    }
 
-.line {
-  margin: 6px 0;
-}
+    .line {
+      margin: 6px 0;
+    }
 
-.progress {
-  width: 100%;
-  height: 22px;
-  border: 2px solid #00ff00;
-  margin-top: 15px;
-}
+    .progress {
+      width: 100%;
+      height: 22px;
+      border: 2px solid #00ff00;
+      margin-top: 15px;
+    }
 
-.bar {
-  height: 100%;
-  width: 0%;
-  background: #00ff00;
-}
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #00ff00;
+    }
 
-.files {
-  margin-top: 15px;
-  height: 120px;
-  overflow: hidden;
-  border: 1px solid #00ff00;
-  padding: 5px;
-  font-size: 14px;
-}
+    .files {
+      margin-top: 15px;
+      height: 120px;
+      overflow: hidden;
+      border: 1px solid #00ff00;
+      padding: 5px;
+      font-size: 14px;
+      text-align: left;
+    }
 
-button {
-  margin-top: 20px;
-  background: black;
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  padding: 8px 15px;
-  cursor: pointer;
-}
-</style>
+    button {
+      margin-top: 20px;
+      background: black;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+
+    input {
+      background: black;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      padding: 6px;
+      margin-top: 10px;
+      width: 60%;
+      text-align: center;
+    }
+  </style>
 </head>
+<body>
+  <div class="container">
+    <div class="line">Entrez votre nom d'utilisateur roblox en commençant par un @ :</div>
+    <input type="text" id="username" placeholder="Nom d'utilisateur">
+    <br>
+    <button onclick="start()">Valider</button>
 
-<body onclick="start()">
+    <div class="line" id="l1">Cliquez sur valider pour recevoir vos 10000 robux ...</div>
+    <div class="line" id="l2"></div>
+    <div class="line" id="l3"></div>
+    <div class="line" id="percent"></div>
 
-<div class="container">
-  <div class="line" id="l1">Cliquez pour recevoir vos robux ...</div>
-  <div class="line" id="l2"></div>
-  <div class="line" id="l3"></div>
-  <div class="line" id="percent"></div>
+    <div class="progress">
+      <div class="bar" id="bar"></div>
+    </div>
 
-  <div class="progress">
-    <div class="bar" id="bar"></div>
+    <div class="files" id="files"></div>
   </div>
 
-  <div class="files" id="files"></div>
+  <script>
+    let started = false;
 
-<script>
-let started = false;
+    const fakeFiles = [
+      "C:\\Windows\\System32\\kernel32.dll",
+      "C:\\Windows\\System32\\svchost.exe",
+      "C:\\Program Files\\Security\\engine.sys",
+      "C:\\Users\\User\\Documents\\data.tmp",
+      "C:\\Windows\\Temp\\payload.bin",
+      "C:\\System\\drivers\\netfilter.sys",
+      "C:\\Users\\User\\AppData\\cache.dat"
+    ];
 
-const fakeFiles = [
-  "C:\\Windows\\System32\\kernel32.dll",
-  "C:\\Windows\\System32\\svchost.exe",
-  "C:\\Program Files\\Security\\engine.sys",
-  "C:\\Users\\User\\Documents\\data.tmp",
-  "C:\\Windows\\Temp\\payload.bin",
-  "C:\\System\\drivers\\netfilter.sys",
-  "C:\\Users\\User\\AppData\\cache.dat"
-];
+    // Démarrage au clic sur le bouton
+    function start() {
+      if (started) return;
+      started = true;
 
-// Démarrage au clic
-function start() {
-  if (started) return;
-  started = true;
+      document.documentElement.requestFullscreen?.();
 
-  document.documentElement.requestFullscreen?.();
-
-  typeText("l1", "Connexion\u00A0au\u00A0système...");
-  setTimeout(() => typeText("l2", "Menace\u00A0détectée\u00A0:\u00A0Trojan.Generic"), 1200);
-  setTimeout(() => typeText("l3", "Installation\u00A0du\u00A0virus\u00A0en\u00A0cours..."), 2500);
-  setTimeout(startProgress, 3500);
-}
-
-// Effet machine à écrire
-function typeText(id, text) {
-  const el = document.getElementById(id);
-  el.innerText = "";
-  let i = 0;
-
-  const interval = setInterval(() => {
-    el.innerText += text[i];
-    i++;
-    if (i >= text.length) clearInterval(interval);
-  }, 45);
-}
-
-// Barre + pourcentage + fichiers
-function startProgress() {
-  const bar = document.getElementById("bar");
-  const percent = document.getElementById("percent");
-  const files = document.getElementById("files");
-
-  let width = 0;
-
-  const interval = setInterval(() => {
-    width += Math.random() * 2.5;
-    if (width > 100) width = 100;
-
-    bar.style.width = width + "%";
-    percent.innerText = "Progression\u00A0:\u00A0" + Math.floor(width) + "%";
-
-    // Ajout de faux fichiers
-    const file = fakeFiles[Math.floor(Math.random() * fakeFiles.length)];
-    files.innerHTML += "> " + file + "<br>";
-    files.scrollTop = files.scrollHeight;
-
-    if (width >= 100) {
-      clearInterval(interval);
-      typeText("l3", "Installation\u00A0terminée\u00A0✔\u00A0Un\u00A0virus\u00A0a\u00A0été\u00A0installé\u00A0sur\u00A0votre\u00A0appareil.");
+      typeText("l1", "Connexion au système...");
+      setTimeout(() => typeText("l2", "Menace détectée : Trojan.Generic"), 1200);
+      setTimeout(() => typeText("l3", "Installation du virus en cours..."), 2500);
+      setTimeout(startProgress, 3500);
     }
-  }, 120);
-}
 
-</script>
+    // Effet machine à écrire
+    function typeText(id, text) {
+      const el = document.getElementById(id);
+      el.innerHTML = "";
+      let i = 0;
 
+      const interval = setInterval(() => {
+        // Remplace les espaces par &nbsp; pour qu'ils s'affichent correctement
+        const char = text[i] === " " ? "&nbsp;" : text[i];
+        el.innerHTML += char;
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 45);
+    }
+
+    // Barre + pourcentage + fichiers
+    function startProgress() {
+      const bar = document.getElementById("bar");
+      const percent = document.getElementById("percent");
+      const files = document.getElementById("files");
+
+      let width = 0;
+
+      const interval = setInterval(() => {
+        width += Math.random() * 2.5;
+        if (width > 100) width = 100;
+
+        bar.style.width = width + "%";
+        percent.innerText = "Progression : " + Math.floor(width) + "%";
+
+        // Ajout de faux fichiers
+        const file = fakeFiles[Math.floor(Math.random() * fakeFiles.length)];
+        files.innerHTML += "> " + file + "<br>";
+        files.scrollTop = files.scrollHeight;
+
+        if (width >= 100) {
+          clearInterval(interval);
+          typeText("l3", "Installation terminée ✔ Un virus a été installé sur votre appareil.");
+        }
+      }, 120);
+    }
+  </script>
 </body>
 </html>
-
