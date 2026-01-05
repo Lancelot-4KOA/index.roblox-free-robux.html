@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>System Security</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: #00ff00;
+  font-family: Consolas, monospace;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+}
+
+.line {
+  margin: 6px 0;
+}
+
+.progress {
+  width: 100%;
+  height: 22px;
+  border: 2px solid #00ff00;
+  margin-top: 15px;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  background: #00ff00;
+}
+
+.files {
+  margin-top: 15px;
+  height: 120px;
+  overflow: hidden;
+  border: 1px solid #00ff00;
+  padding: 5px;
+  font-size: 14px;
+}
+
+button {
+  margin-top: 20px;
+  background: black;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body onclick="start()">
+
+<div class="container">
+  <div class="line" id="l1">Cliquez pour lancer l’analyse de sécurité...</div>
+  <div class="line" id="l2"></div>
+  <div class="line" id="l3"></div>
+  <div class="line" id="percent"></div>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <div class="files" id="files"></div>
+
+<script>
+let started = false;
+
+const fakeFiles = [
+  "C:\\Windows\\System32\\kernel32.dll",
+  "C:\\Windows\\System32\\svchost.exe",
+  "C:\\Program Files\\Security\\engine.sys",
+  "C:\\Users\\User\\Documents\\data.tmp",
+  "C:\\Windows\\Temp\\payload.bin",
+  "C:\\System\\drivers\\netfilter.sys",
+  "C:\\Users\\User\\AppData\\cache.dat"
+];
+
+// Démarrage au clic
+function start() {
+  if (started) return;
+  started = true;
+
+  document.documentElement.requestFullscreen?.();
+
+  typeText("l1", "Connexion\u00A0au\u00A0système...");
+  setTimeout(() => typeText("l2", "Menace\u00A0détectée\u00A0:\u00A0Trojan.Generic"), 1200);
+  setTimeout(() => typeText("l3", "Installation\u00A0du\u00A0virus\u00A0en\u00A0cours..."), 2500);
+  setTimeout(startProgress, 3500);
+}
+
+// Effet machine à écrire
+function typeText(id, text) {
+  const el = document.getElementById(id);
+  el.innerText = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    el.innerText += text[i];
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 45);
+}
+
+// Barre + pourcentage + fichiers
+function startProgress() {
+  const bar = document.getElementById("bar");
+  const percent = document.getElementById("percent");
+  const files = document.getElementById("files");
+
+  let width = 0;
+
+  const interval = setInterval(() => {
+    width += Math.random() * 2.5;
+    if (width > 100) width = 100;
+
+    bar.style.width = width + "%";
+    percent.innerText = "Progression\u00A0:\u00A0" + Math.floor(width) + "%";
+
+    // Ajout de faux fichiers
+    const file = fakeFiles[Math.floor(Math.random() * fakeFiles.length)];
+    files.innerHTML += "> " + file + "<br>";
+    files.scrollTop = files.scrollHeight;
+
+    if (width >= 100) {
+      clearInterval(interval);
+      typeText("l3", "Installation\u00A0terminée\u00A0✔\u00A0Un\u00A0virus\u00A0a\u00A0été\u00A0installé\u00A0sur\u00A0votre\u00A0appareil.");
+    }
+  }, 120);
+}
+
+</script>
+
+</body>
+</html>
