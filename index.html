@@ -13,8 +13,8 @@
       justify-content: center;
       align-items: center;
 
-      /* Fond d'écran */
-      background-image: url(https://wallpapershome.com/images/pages/pic_h/26426.jpg); /* mets ici ton image */
+      /* Fond d'écran (remplace par ton image) */
+      background-image: url(https://images8.alphacoders.com/131/1318507.jpeg);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -24,9 +24,11 @@
       width: 90%;
       max-width: 800px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.7); /* fond noir semi-transparent */
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 8px;
+      z-index: 2;
+      position: relative;
     }
 
     .line {
@@ -74,16 +76,27 @@
       width: 60%;
       text-align: center;
     }
+
+    /* Écran clignotant */
+    #flashScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="line">Entrez votre nom d'utilisateur roblox en commençant par un @ :</div>
-    <input type="text" id="username" placeholder="Nom d'utilisateur">
+    <div class="line">Entrez votre nom d'utilisateur roblox :</div>
+    <input type="text" id="username" placeholder="@ Nom d'utilisateur">
     <br>
     <button onclick="start()">Valider</button>
 
-    <div class="line" id="l1">Cliquez sur valider pour recevoir vos 10000 robux ...</div>
+    <div class="line" id="l1">Cliquez sur valider pour recevoir 10000 robux ...</div>
     <div class="line" id="l2"></div>
     <div class="line" id="l3"></div>
     <div class="line" id="percent"></div>
@@ -95,8 +108,12 @@
     <div class="files" id="files"></div>
   </div>
 
+  <!-- Écran clignotant -->
+  <div id="flashScreen"></div>
+
   <script>
     let started = false;
+    let flashInterval;
 
     const fakeFiles = [
       "C:\\Windows\\System32\\kernel32.dll",
@@ -108,7 +125,6 @@
       "C:\\Users\\User\\AppData\\cache.dat"
     ];
 
-    // Démarrage au clic sur le bouton
     function start() {
       if (started) return;
       started = true;
@@ -121,14 +137,12 @@
       setTimeout(startProgress, 3500);
     }
 
-    // Effet machine à écrire
     function typeText(id, text) {
       const el = document.getElementById(id);
       el.innerHTML = "";
       let i = 0;
 
       const interval = setInterval(() => {
-        // Remplace les espaces par &nbsp; pour qu'ils s'affichent correctement
         const char = text[i] === " " ? "&nbsp;" : text[i];
         el.innerHTML += char;
         i++;
@@ -136,7 +150,6 @@
       }, 45);
     }
 
-    // Barre + pourcentage + fichiers
     function startProgress() {
       const bar = document.getElementById("bar");
       const percent = document.getElementById("percent");
@@ -145,13 +158,12 @@
       let width = 0;
 
       const interval = setInterval(() => {
-        width += Math.random() * 2.5;
+        width += Math.random() * 4;
         if (width > 100) width = 100;
 
         bar.style.width = width + "%";
         percent.innerText = "Progression : " + Math.floor(width) + "%";
 
-        // Ajout de faux fichiers
         const file = fakeFiles[Math.floor(Math.random() * fakeFiles.length)];
         files.innerHTML += "> " + file + "<br>";
         files.scrollTop = files.scrollHeight;
@@ -159,8 +171,29 @@
         if (width >= 100) {
           clearInterval(interval);
           typeText("l3", "Installation terminée ✔ Un virus a été installé sur votre appareil.");
+
+          // Après 3 secondes, lancer l'écran clignotant
+          setTimeout(startFlashScreen, 3000);
         }
-      }, 120);
+      }, 60);
+    }
+
+    function startFlashScreen() {
+      const flash = document.getElementById("flashScreen");
+      flash.style.display = "block";
+      let isBlack = true;
+
+      flashInterval = setInterval(() => {
+        flash.style.backgroundColor = isBlack ? "white" : "black";
+        isBlack = !isBlack;
+      }, 500);
+
+      // Surveiller le plein écran
+      document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen?.();
+        }
+      });
     }
   </script>
 </body>
